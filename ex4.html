@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Challenge 04 - Directions</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  
+  <select id="sltTransports">
+    <option value="DRIVING">BY CAR</option>
+    <option value="WALKING">BY FOOT</option>
+    <option value="BICYCLING">BY BICYCLE</option>
+  </select>
+  <button onclick="calcRoute()">Get direction to visit ISEP and ESTG</button>
+
+  <div id="map"></div>
+  <script>
+    let myPos;
+    function initMap() {
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer();
+      const chicago = new google.maps.LatLng(41.850033, -87.6500523);
+      const mapOptions = {
+        zoom: 14,
+        center: chicago,
+        mapTypeId:"satellite"
+      }
+      map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      directionsRenderer.setMap(map);
+      document.getElementById('sltTransports').addEventListener('change', 
+        ()=> calcRoute(directionsService, directionsRenderer)
+      );
+
+
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            myPos = { lat: position.coords.latitude, lng: position.coords.longitude }
+            map.setCenter(myPos)
+          },
+          () => handleLocationError(true, infoWindow, map.getCenter())
+        );
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
+    }
+
+    function calcRoute(directionsService, directionsRenderer) {
+      const esmad = { lat: 41.366949, lng: -8.738722 }
+      const selectedMode = document.getElementById('sltTransports').value;
+      var request = {
+        origin: myPos,
+        destination: esmad,
+        travelMode: google.maps.TravelMode[selectedMode]
+      };
+      directionsService.route(request, function (result, status) {
+        if (status == 'OK') {
+          directionsRenderer.setDirections(result);
+          const directionsData = result.routes[0].legs[0]; // Get data about the mapped route
+          if (!directionsData) {
+            window.alert('Directions request failed');
+            return;
+          }
+          else {
+            alert(" Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").");
+          }
+        }
+      });
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+      infoWindow.open(map);
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCu6id3xQxz1qokpT6NrhCTWb44RXerjkI&callback=initMap">
+    </script>
+</body>
+
+</html>
