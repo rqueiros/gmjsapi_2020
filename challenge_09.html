@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Challenge 04 - Directions</title>
+  <title>Challenge 09 - Direction to ESMAD</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
   <style>
@@ -19,37 +19,43 @@
       margin: 0;
       padding: 0;
     }
+
+    #divResults {
+      background-color: yellow;
+    }
   </style>
 </head>
 
 <body>
-  
+
   <select id="sltTransports">
+    <option value="">-- SELECT TRANSPORT --</option>
     <option value="DRIVING">BY CAR</option>
     <option value="WALKING">BY FOOT</option>
     <option value="BICYCLING">BY BICYCLE</option>
   </select>
-  <button onclick="calcRoute()">Get direction to visit ISEP and ESTG</button>
-
+  <br>
+  <div id="divResults"></div>
+  <br>
   <div id="map"></div>
+
   <script>
     let myPos;
     function initMap() {
+
+      // Create objects to manage the Directions Service
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer();
-      const chicago = new google.maps.LatLng(41.850033, -87.6500523);
+
+      // Create the Map object      
       const mapOptions = {
         zoom: 14,
-        center: chicago,
-        mapTypeId:"satellite"
+        mapTypeId: "satellite"
       }
-      map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      map = new google.maps.Map(document.querySelector('#map'), mapOptions);
+
+      // Assign the map to the service object
       directionsRenderer.setMap(map);
-      document.getElementById('sltTransports').addEventListener('change', 
-        ()=> calcRoute(directionsService, directionsRenderer)
-      );
-
-
 
       // Try HTML5 geolocation.
       if (navigator.geolocation) {
@@ -64,29 +70,45 @@
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
       }
+
+      // Add a select listener to generate and render the route
+      document.getElementById('sltTransports').addEventListener('change',
+        () => calcRoute(directionsService, directionsRenderer)
+      );
     }
 
     function calcRoute(directionsService, directionsRenderer) {
+      
       const esmad = { lat: 41.366949, lng: -8.738722 }
-      const selectedMode = document.getElementById('sltTransports').value;
-      var request = {
+      const selectedMode = document.querySelector('#sltTransports').value;
+      
+      // Creation of a DirectionsRequest object 
+      const request = {
         origin: myPos,
         destination: esmad,
         travelMode: google.maps.TravelMode[selectedMode]
       };
-      directionsService.route(request, function (result, status) {
-        if (status == 'OK') {
-          directionsRenderer.setDirections(result);
-          const directionsData = result.routes[0].legs[0]; // Get data about the mapped route
-          if (!directionsData) {
-            window.alert('Directions request failed');
-            return;
+
+      // call DirectionsService.route() to initiate a request to the Directions service
+      // passing it a DirectionsRequest object literal containing the input terms and a callback method 
+      // to execute upon receipt of the response.
+      directionsService.route(request,
+        (result, status) => {
+          if (status == 'OK') {
+            directionsRenderer.setDirections(result);
+            const directionsData = result.routes[0].legs[0]; // Get data about the mapped route
+            if (directionsData) {
+              document.querySelector("#divResults").innerHTML = `
+                Driving distance is ${directionsData.distance.text} (${directionsData.duration.text})
+              `
+            }
+            else {
+              document.querySelector("#divResults").innerHTML = 'Directions request failed'
+            }
+          } else {
+            document.querySelector("#divResults").innerHTML = status
           }
-          else {
-            alert(" Driving distance is " + directionsData.distance.text + " (" + directionsData.duration.text + ").");
-          }
-        }
-      });
+        });
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -98,7 +120,7 @@
     }
   </script>
   <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap">
     </script>
 </body>
 

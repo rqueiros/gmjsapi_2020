@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta charset="utf-8" />
-    <title>Waypoints in Directions</title>
+    <title>Challenge 09 (extra) - Waypoints in Directions</title>
     <style>
       #right-panel {
         font-family: "Roboto", "sans-serif";
@@ -64,7 +64,7 @@
       <option value="WALKING">BY FOOT</option>
       <option value="BICYCLING">BY BICYCLE</option>
     </select>
-    <button id="myBtn">Get direction to visit ISEP and ESTG</button>
+    <button id="myBtn">Get direction to visit ESMAD, ISEP and ESTG</button>
     <div id="directions-panel"></div>
     <div id="map"></div>
 
@@ -79,11 +79,7 @@
           mapTypeId: "satellite"
         });
         directionsRenderer.setMap(map);
-
-        document.getElementById("myBtn").addEventListener("click", function() {
-          calculateAndDisplayRoute(directionsService, directionsRenderer);
-        });
-
+        
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
@@ -100,19 +96,25 @@
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
+
+        document.querySelector("#myBtn").addEventListener("click", function() {
+          calculateAndDisplayRoute(directionsService, directionsRenderer);
+        });
+
       }
 
       function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+        
         const isep = { lat: 41.17, lng: -8.6 };
         const esmad = { lat: 41.366949, lng: -8.738722 };
         const estg = { lat: 41.22, lng: -8.11 };
-
-        const selectedMode = document.getElementById("sltTransports").value;
 
         let waypts = [];
         waypts.push({ location: isep, stopover: true });
         waypts.push({ location: esmad, stopover: true });
         waypts.push({ location: estg, stopover: true });
+
+        const selectedMode = document.getElementById("sltTransports").value;
 
         directionsService.route(
           {
@@ -128,9 +130,7 @@
               var route = response.routes[0];
               var summaryPanel = document.getElementById("directions-panel");
               summaryPanel.innerHTML = "";
-              console.log(route.waypoint_order);
-              console.log(route);
-
+              
               // For each route, display summary information.
               for (var i = 0; i < route.legs.length; i++) {
                 var routeSegment = i + 1;
@@ -139,8 +139,7 @@
                 summaryPanel.innerHTML += route.legs[i].start_address + " to ";
                 summaryPanel.innerHTML += route.legs[i].end_address + "<br>";
                 summaryPanel.innerHTML += route.legs[i].distance.text + "<br>";
-                summaryPanel.innerHTML +=
-                  route.legs[i].duration.text + "<br><br>";
+                summaryPanel.innerHTML += route.legs[i].duration.text + "<br><br>";
               }
             } else {
               window.alert("Directions request failed due to " + status);
@@ -152,7 +151,7 @@
     <script
       async
       defer
-      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap"
     ></script>
   </body>
 </html>

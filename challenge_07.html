@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Geolocation</title>
+    <title>Challenge 07 - Get your location</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <style>
@@ -30,11 +30,11 @@
         });
         infoWindow = new google.maps.InfoWindow;
 
-        // Try HTML5 geolocation.
+        // Try HTML5 geolocation
         if (navigator.geolocation) {
             
-            // returns the current position of the user and continues to return the updated position
-            // as you move (like GPS in a car)
+            // returns the current position of the user 
+            // USE wathPosition to continue to return the updated position as you move (like GPS in a car)
             navigator.geolocation.watchPosition(
                 position => {
                     const pos = { lat: position.coords.latitude, lng: position.coords.longitude };
@@ -60,7 +60,7 @@
       }
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap">
     </script>
   </body>
 </html>

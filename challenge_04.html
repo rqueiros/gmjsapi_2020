@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Challenge 04 - Manage your controls</title>
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <style>
+      /* Always set the map height explicitly to define the size of the div element that contains the map. */
+      #map {
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+
+        
+        const clerigos = new google.maps.LatLng(41.14599, -8.61483);
+
+        const myMapOptions = {
+          center: clerigos,
+          zoom: 20,
+          mapTypeId: "satellite",
+          disableDefaultUI: true,
+          streetViewControl:true
+        };
+
+        const map = new google.maps.Map(
+          document.getElementById("map"),
+          myMapOptions
+        );
+
+      }
+    </script>
+
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap"
+    ></script>
+  </body>
+</html>

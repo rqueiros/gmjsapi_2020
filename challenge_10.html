@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Challenge 10 - Get restaurants in Vila do Conde</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #divResults {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="btnRestaurants">GET RESTAURANTS</button>
+  <div id="map"></div>
+
+  <script>
+    let map, service, infowindow;
+    let viladoconde
+    function initMap() {
+
+      // Create a map with a custom marker in the center of Vila do Conde
+      viladoconde = new google.maps.LatLng(41.354079, -8.741937);
+      infowindow = new google.maps.InfoWindow();
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: viladoconde,
+        zoom: 18
+      });
+
+      // Create a marker ("P") for Vila do Conde 
+      const iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+      const marker = new google.maps.Marker({
+        position: viladoconde,
+        map: map,
+        icon: iconBase + 'parking_lot_maps.png'
+      });
+
+      // Create the request to send to the Places Service
+      const request = {
+        location: viladoconde,
+        radius: '1000',
+        type: ['restaurant']
+      };
+
+      document.querySelector('#btnRestaurants').addEventListener('click',
+        () => {
+          service = new google.maps.places.PlacesService(map);
+          service.nearbySearch(request, callback);
+        }
+      )
+
+
+    }
+
+    function callback(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        for (const result of results) {
+          //if(result.opening_hours && result.opening_hours.open_now)
+            createMarker(result);          
+        }
+        map.setCenter(viladoconde);
+      }
+    }
+
+    function createMarker(place) {
+      const marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location
+      });
+
+      google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap&libraries=places">
+    </script>
+</body>
+
+</html>

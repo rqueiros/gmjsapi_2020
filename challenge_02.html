@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Challenge 02 - Change map types</title>
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <style>
+      /* Always set the map height explicitly to define the size of the div element that contains the map. */
+      #map {
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        const myLatLng = new google.maps.LatLng(36.964, -122.015);
+
+        const myMapOptions = {
+          center: myLatLng,
+          zoom: 18,
+          mapTypeId: "satellite"
+        };
+
+        const map = new google.maps.Map(
+          document.getElementById("map"),
+          myMapOptions
+        );
+      }
+    </script>
+
+    <script
+      async
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap"
+    ></script>
+  </body>
+</html>
