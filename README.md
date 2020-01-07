@@ -1,7 +1,7 @@
 # gmjsapi_2020
 Google Maps JS API 2020 - Challenges 
 
-## Challenge 01 - Simple Map
+### Challenge 01 - Simple Map
 ## Challenge 02 - Change map types
 ## Challenge 03 - Style your map!
 ## Challenge 04 - Manage your controls
